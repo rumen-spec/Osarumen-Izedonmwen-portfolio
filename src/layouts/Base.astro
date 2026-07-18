@@ -1,0 +1,85 @@
+---
+import "../styles/global.css";
+import { profile } from "../data/resume";
+
+interface Props {
+  title?: string;
+  description?: string;
+}
+
+const {
+  title = `${profile.name} — Software Engineer`,
+  description = profile.tagline,
+} = Astro.props;
+---
+
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <meta name="color-scheme" content="light dark" />
+    <meta name="generator" content={Astro.generator} />
+    <title>{title}</title>
+    <meta name="description" content={description} />
+
+    <meta property="og:type" content="website" />
+    <meta property="og:title" content={title} />
+    <meta property="og:description" content={description} />
+    <meta name="twitter:card" content="summary" />
+
+    <link rel="icon" href="/favicon.svg" type="image/svg+xml" />
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Inter:wght@400;450;500;600;700&display=swap"
+      rel="stylesheet"
+    />
+
+    {/* Set theme before paint to avoid flash */}
+    <script is:inline>
+      (function () {
+        try {
+          const stored = localStorage.getItem("theme");
+          const prefersDark = window.matchMedia(
+            "(prefers-color-scheme: dark)"
+          ).matches;
+          const theme = stored || (prefersDark ? "dark" : "light");
+          document.documentElement.setAttribute("data-theme", theme);
+        } catch (e) {
+          document.documentElement.setAttribute("data-theme", "light");
+        }
+      })();
+    </script>
+  </head>
+  <body>
+    <div class="bg-dots" aria-hidden="true"></div>
+    <div class="cursor-glow" aria-hidden="true"></div>
+    <slot />
+
+    <script is:inline>
+      (function () {
+        if (window.matchMedia("(prefers-reduced-motion: reduce)").matches) return;
+        const root = document.documentElement;
+        let raf = null;
+        let x = 0;
+        let y = 0;
+        window.addEventListener(
+          "pointermove",
+          function (e) {
+            if (e.pointerType === "touch") return;
+            x = e.clientX;
+            y = e.clientY;
+            if (raf) return;
+            raf = requestAnimationFrame(function () {
+              root.style.setProperty("--mx", x + "px");
+              root.style.setProperty("--my", y + "px");
+              raf = null;
+            });
+          },
+          { passive: true }
+        );
+      })();
+    </script>
+  </body>
+</html>

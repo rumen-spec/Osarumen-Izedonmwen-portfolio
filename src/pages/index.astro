@@ -1,0 +1,580 @@
+---
+import Base from "../layouts/Base.astro";
+import TopBar from "../components/TopBar.astro";
+import CommandPalette from "../components/CommandPalette.astro";
+import { profile, experience, education, projects, skills } from "../data/resume";
+---
+
+<Base>
+  <TopBar />
+
+  <main id="top" class="wrap">
+    <!-- Hero -->
+    <section class="hero reveal">
+      <h1 class="hero__name">{profile.name}</h1>
+      <p class="hero__tagline">{profile.tagline}</p>
+      <ul class="hero__links">
+        <li>
+          <a href={`mailto:${profile.email}`} class="link">
+            {profile.email}
+          </a>
+        </li>
+        <li aria-hidden="true" class="dot">·</li>
+        <li>
+          <a href={profile.socials.github} target="_blank" rel="noopener" class="link">GitHub</a>
+        </li>
+        <li aria-hidden="true" class="dot">·</li>
+        <li>
+          <a href={profile.socials.linkedin} target="_blank" rel="noopener" class="link">LinkedIn</a>
+        </li>
+        <li aria-hidden="true" class="dot">·</li>
+        <li>
+          <a href={profile.resumeUrl} target="_blank" rel="noopener" class="link">Résumé</a>
+        </li>
+      </ul>
+    </section>
+
+    <!-- Experience -->
+    <section id="experience" class="section reveal">
+      <h2 class="section__title">Experience</h2>
+      <div class="stack">
+        {
+          experience.map((job) => (
+            <article class="entry">
+              <div class="entry__head">
+                <div class="entry__lead">
+                  <span class="entry__role">{job.role}</span>
+                  <span class="entry__sep">·</span>
+                  <span class="entry__company">{job.company}</span>
+                  {job.url && (
+                    <a
+                      href={job.url}
+                      target="_blank"
+                      rel="noopener"
+                      class="entry__link"
+                      aria-label={`${job.company} — ${job.urlType === "github" ? "GitHub" : "website"}`}
+                    >
+                      {job.urlType === "github" ? (
+                        <svg viewBox="0 0 24 24" width="15" height="15" aria-hidden="true">
+                          <path
+                            fill="currentColor"
+                            d="M12 2a10 10 0 0 0-3.16 19.49c.5.09.68-.22.68-.48v-1.7c-2.78.6-3.37-1.34-3.37-1.34-.45-1.16-1.11-1.47-1.11-1.47-.91-.62.07-.6.07-.6 1 .07 1.53 1.03 1.53 1.03.9 1.53 2.34 1.09 2.91.83.09-.65.35-1.09.63-1.34-2.22-.25-4.55-1.11-4.55-4.94 0-1.09.39-1.98 1.03-2.68-.1-.25-.45-1.27.1-2.65 0 0 .84-.27 2.75 1.02a9.5 9.5 0 0 1 5 0c1.91-1.29 2.75-1.02 2.75-1.02.55 1.38.2 2.4.1 2.65.64.7 1.03 1.59 1.03 2.68 0 3.84-2.34 4.69-4.57 4.94.36.31.68.92.68 1.85v2.74c0 .27.18.58.69.48A10 10 0 0 0 12 2Z"
+                          />
+                        </svg>
+                      ) : (
+                        <svg viewBox="0 0 24 24" width="15" height="15" aria-hidden="true">
+                          <path
+                            d="M14 4h6v6M20 4l-9 9M18 14v4a2 2 0 0 1-2 2H6a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h4"
+                            fill="none"
+                            stroke="currentColor"
+                            stroke-width="1.8"
+                            stroke-linecap="round"
+                            stroke-linejoin="round"
+                          />
+                        </svg>
+                      )}
+                    </a>
+                  )}
+                </div>
+                <span class="entry__date">
+                  {job.start} – {job.end}
+                </span>
+              </div>
+              <ul class="entry__bullets">
+                {job.bullets.map((b) => (
+                  <li>{b}</li>
+                ))}
+              </ul>
+              <span class="entry__loc">{job.location}</span>
+            </article>
+          ))
+        }
+      </div>
+    </section>
+
+    <!-- Education -->
+    <section id="education" class="section reveal">
+      <h2 class="section__title">Education</h2>
+      <div class="stack">
+        {
+          education.map((ed) => (
+            <article class="entry">
+              <div class="entry__head">
+                <div class="entry__lead">
+                  <span class="entry__role">{ed.school}</span>
+                  <span class="entry__sep">·</span>
+                  <span class="entry__company">{ed.detail}</span>
+                </div>
+                <span class="entry__date">
+                  {ed.start} – {ed.end}
+                </span>
+              </div>
+              <p class="entry__degree">{ed.degree}</p>
+              <div class="tags">
+                {ed.awards.map((a) => (
+                  <span class="tag">{a}</span>
+                ))}
+              </div>
+              <span class="entry__loc">{ed.location}</span>
+            </article>
+          ))
+        }
+      </div>
+    </section>
+
+    <!-- Projects -->
+    <section id="projects" class="section reveal">
+      <h2 class="section__title">Projects</h2>
+      <div class="grid">
+        {
+          projects.map((p) => (
+            <article class="card">
+              <div class="card__head">
+                <h3 class="card__title">{p.name}</h3>
+                <div class="card__actions">
+                  {p.github && (
+                    <a
+                      href={p.github}
+                      target="_blank"
+                      rel="noopener"
+                      class="card__icon"
+                      aria-label={`${p.name} on GitHub`}
+                    >
+                      <svg viewBox="0 0 24 24" width="17" height="17" aria-hidden="true">
+                        <path
+                          fill="currentColor"
+                          d="M12 2a10 10 0 0 0-3.16 19.49c.5.09.68-.22.68-.48v-1.7c-2.78.6-3.37-1.34-3.37-1.34-.45-1.16-1.11-1.47-1.11-1.47-.91-.62.07-.6.07-.6 1 .07 1.53 1.03 1.53 1.03.9 1.53 2.34 1.09 2.91.83.09-.65.35-1.09.63-1.34-2.22-.25-4.55-1.11-4.55-4.94 0-1.09.39-1.98 1.03-2.68-.1-.25-.45-1.27.1-2.65 0 0 .84-.27 2.75 1.02a9.5 9.5 0 0 1 5 0c1.91-1.29 2.75-1.02 2.75-1.02.55 1.38.2 2.4.1 2.65.64.7 1.03 1.59 1.03 2.68 0 3.84-2.34 4.69-4.57 4.94.36.31.68.92.68 1.85v2.74c0 .27.18.58.69.48A10 10 0 0 0 12 2Z"
+                        />
+                      </svg>
+                    </a>
+                  )}
+                  {p.live && (
+                    <a
+                      href={p.live}
+                      target="_blank"
+                      rel="noopener"
+                      class="card__icon"
+                      aria-label={`${p.name} — live`}
+                    >
+                      <svg viewBox="0 0 24 24" width="17" height="17" aria-hidden="true">
+                        <path
+                          d="M14 4h6v6M20 4l-9 9M18 14v4a2 2 0 0 1-2 2H6a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h4"
+                          fill="none"
+                          stroke="currentColor"
+                          stroke-width="1.8"
+                          stroke-linecap="round"
+                          stroke-linejoin="round"
+                        />
+                      </svg>
+                    </a>
+                  )}
+                </div>
+              </div>
+              <p class="card__desc">{p.description}</p>
+              <div class="tags">
+                {p.tech.map((t) => (
+                  <span class="tag">{t}</span>
+                ))}
+              </div>
+            </article>
+          ))
+        }
+      </div>
+    </section>
+
+    <!-- Skills -->
+    <section id="skills" class="section reveal">
+      <h2 class="section__title">Skills</h2>
+      <div class="skills">
+        {
+          skills.map((group) => (
+            <div class="skills__group">
+              <span class="skills__label">{group.label}</span>
+              <div class="tags">
+                {group.items.map((item) => (
+                  <span class="tag">{item}</span>
+                ))}
+              </div>
+            </div>
+          ))
+        }
+      </div>
+    </section>
+
+    <footer class="footer reveal">
+      <span>© {new Date().getFullYear()} {profile.name}</span>
+      <span class="footer__hint">
+        Press <kbd class="kbd">⌘</kbd><kbd class="kbd">K</kbd> anywhere
+      </span>
+    </footer>
+  </main>
+
+  <CommandPalette />
+</Base>
+
+<script is:inline>
+  // Reveal-on-scroll
+  (function () {
+    const items = document.querySelectorAll(".reveal");
+    if (!("IntersectionObserver" in window)) {
+      items.forEach((el) => el.classList.add("is-visible"));
+      return;
+    }
+    const io = new IntersectionObserver(
+      (entries) => {
+        entries.forEach((e) => {
+          if (e.isIntersecting) {
+            e.target.classList.add("is-visible");
+            io.unobserve(e.target);
+          }
+        });
+      },
+      { threshold: 0.12, rootMargin: "0px 0px -8% 0px" }
+    );
+    items.forEach((el) => io.observe(el));
+  })();
+
+  // Theme toggle
+  (function () {
+    const btn = document.getElementById("theme-toggle");
+    btn?.addEventListener("click", () => {
+      const cur = document.documentElement.getAttribute("data-theme");
+      const next = cur === "dark" ? "light" : "dark";
+      document.documentElement.setAttribute("data-theme", next);
+      try {
+        localStorage.setItem("theme", next);
+      } catch (e) {}
+    });
+  })();
+
+  // Topbar border on scroll
+  (function () {
+    const bar = document.querySelector(".topbar");
+    const onScroll = () => bar?.classList.toggle("is-scrolled", window.scrollY > 8);
+    onScroll();
+    window.addEventListener("scroll", onScroll, { passive: true });
+  })();
+</script>
+
+<style>
+  main {
+    padding-bottom: 80px;
+  }
+
+  /* Hero */
+  .hero {
+    padding: clamp(48px, 12vh, 96px) 0 8px;
+  }
+  .hero__name {
+    margin: 0 0 18px;
+    font-size: clamp(30px, 7vw, 44px);
+    font-weight: 700;
+    letter-spacing: -0.03em;
+    line-height: 1.05;
+  }
+  .hero__tagline {
+    margin: 0 0 22px;
+    max-width: 55ch;
+    color: var(--fg-muted);
+    font-size: clamp(15px, 2.6vw, 17px);
+    line-height: 1.7;
+  }
+  .hero__links {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: 8px 10px;
+    margin: 0;
+    padding: 0;
+    list-style: none;
+    font-family: var(--font-mono);
+    font-size: 13.5px;
+    color: var(--fg-muted);
+  }
+  .dot {
+    color: var(--fg-subtle);
+  }
+  .link {
+    position: relative;
+    color: var(--fg-muted);
+    transition: color 0.2s ease;
+  }
+  .link::after {
+    content: "";
+    position: absolute;
+    left: 0;
+    right: 0;
+    bottom: -2px;
+    height: 1px;
+    background: var(--accent);
+    transform: scaleX(0);
+    transform-origin: left;
+    transition: transform 0.24s cubic-bezier(0.22, 1, 0.36, 1);
+  }
+  .link:hover {
+    color: var(--fg);
+  }
+  .link:hover::after {
+    transform: scaleX(1);
+  }
+
+  /* Sections */
+  .section {
+    padding-top: clamp(44px, 8vh, 72px);
+  }
+  .section__title {
+    margin: 0 0 24px;
+    font-size: 13px;
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: 0.14em;
+    color: var(--fg-subtle);
+  }
+  .stack {
+    display: flex;
+    flex-direction: column;
+    gap: 34px;
+  }
+
+  /* Entries (experience / education) */
+  .entry {
+    display: block;
+  }
+  .entry__head {
+    display: flex;
+    align-items: baseline;
+    justify-content: space-between;
+    gap: 12px 16px;
+    flex-wrap: wrap;
+  }
+  .entry__lead {
+    display: flex;
+    align-items: baseline;
+    flex-wrap: wrap;
+    gap: 6px;
+    min-width: 0;
+  }
+  .entry__role {
+    font-weight: 600;
+    font-size: 16px;
+    letter-spacing: -0.01em;
+  }
+  .entry__sep {
+    color: var(--fg-subtle);
+  }
+  .entry__company {
+    color: var(--fg-muted);
+    font-size: 15px;
+  }
+  .entry__link {
+    display: inline-grid;
+    place-items: center;
+    width: 24px;
+    height: 24px;
+    border-radius: 7px;
+    color: var(--fg-subtle);
+    transition: color 0.2s ease, background-color 0.2s ease;
+  }
+  .entry__link:hover {
+    color: var(--accent);
+    background: var(--tag-bg);
+  }
+  .entry__date {
+    font-family: var(--font-mono);
+    font-size: 12.5px;
+    color: var(--fg-subtle);
+    white-space: nowrap;
+  }
+  .entry__bullets {
+    margin: 12px 0 10px;
+    padding: 0;
+    list-style: none;
+    display: flex;
+    flex-direction: column;
+    gap: 9px;
+  }
+  .entry__bullets li {
+    position: relative;
+    padding-left: 18px;
+    color: var(--fg-muted);
+    font-size: 14.5px;
+    line-height: 1.62;
+  }
+  .entry__bullets li::before {
+    content: "";
+    position: absolute;
+    left: 2px;
+    top: 0.68em;
+    width: 5px;
+    height: 5px;
+    border-radius: 50%;
+    background: var(--border-strong);
+  }
+  .entry__degree {
+    margin: 10px 0 12px;
+    color: var(--fg-muted);
+    font-size: 14.5px;
+  }
+  .entry__loc {
+    font-family: var(--font-mono);
+    font-size: 12px;
+    color: var(--fg-subtle);
+  }
+
+  /* Projects grid */
+  .grid {
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 14px;
+  }
+  .card {
+    display: flex;
+    flex-direction: column;
+    padding: 18px 18px 20px;
+    border: 1px solid var(--border);
+    border-radius: 14px;
+    background: var(--bg-elev);
+    transition: border-color 0.22s ease, transform 0.22s ease, box-shadow 0.22s ease;
+  }
+  .card:hover {
+    border-color: var(--border-strong);
+    transform: translateY(-3px);
+    box-shadow: var(--shadow);
+  }
+  .card__head {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 10px;
+    margin-bottom: 8px;
+  }
+  .card__title {
+    margin: 0;
+    font-size: 15.5px;
+    font-weight: 600;
+    letter-spacing: -0.01em;
+  }
+  .card__actions {
+    display: flex;
+    gap: 4px;
+    flex: none;
+  }
+  .card__icon {
+    display: grid;
+    place-items: center;
+    width: 28px;
+    height: 28px;
+    border-radius: 7px;
+    color: var(--fg-subtle);
+    transition: color 0.2s ease, background-color 0.2s ease;
+  }
+  .card__icon:hover {
+    color: var(--fg);
+    background: var(--tag-bg);
+  }
+  .card__desc {
+    margin: 0 0 14px;
+    color: var(--fg-muted);
+    font-size: 14px;
+    line-height: 1.6;
+    flex: 1;
+  }
+
+  /* Tags */
+  .tags {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 6px;
+  }
+  .tag {
+    display: inline-flex;
+    align-items: center;
+    padding: 3px 9px;
+    border-radius: 999px;
+    background: var(--tag-bg);
+    color: var(--tag-fg);
+    font-family: var(--font-mono);
+    font-size: 11.5px;
+    line-height: 1.5;
+    white-space: nowrap;
+  }
+
+  /* Skills */
+  .skills {
+    display: flex;
+    flex-direction: column;
+    gap: 22px;
+  }
+  .skills__group {
+    display: grid;
+    grid-template-columns: 160px 1fr;
+    gap: 12px 20px;
+    align-items: start;
+  }
+  .skills__label {
+    font-size: 13.5px;
+    font-weight: 500;
+    color: var(--fg);
+    padding-top: 3px;
+  }
+
+  /* Footer */
+  .footer {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    flex-wrap: wrap;
+    gap: 10px;
+    margin-top: clamp(56px, 10vh, 88px);
+    padding-top: 24px;
+    border-top: 1px solid var(--border);
+    font-family: var(--font-mono);
+    font-size: 12.5px;
+    color: var(--fg-subtle);
+  }
+  .footer__hint {
+    display: inline-flex;
+    align-items: center;
+    gap: 5px;
+  }
+  .kbd {
+    display: inline-grid;
+    place-items: center;
+    min-width: 18px;
+    height: 18px;
+    padding: 0 4px;
+    border-radius: 5px;
+    background: var(--tag-bg);
+    color: var(--tag-fg);
+    font-family: var(--font-mono);
+    font-size: 11px;
+    line-height: 1;
+  }
+
+  /* Responsive */
+  @media (max-width: 620px) {
+    .grid {
+      grid-template-columns: 1fr;
+    }
+    .skills__group {
+      grid-template-columns: 1fr;
+      gap: 8px;
+    }
+    .skills__label {
+      padding-top: 0;
+      color: var(--fg-subtle);
+      text-transform: uppercase;
+      font-size: 11.5px;
+      letter-spacing: 0.1em;
+    }
+  }
+  @media (max-width: 460px) {
+    .entry__head {
+      gap: 4px;
+    }
+    .entry__date {
+      order: 3;
+      flex-basis: 100%;
+    }
+  }
+</style>

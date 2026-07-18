@@ -1,0 +1,393 @@
+---
+import { profile } from "../data/resume";
+---
+
+<div
+  id="palette"
+  class="palette"
+  role="dialog"
+  aria-modal="true"
+  aria-label="Command palette"
+  hidden
+>
+  <div class="palette__overlay" data-close></div>
+  <div class="palette__panel" role="document">
+    <div class="palette__search">
+      <svg class="palette__search-icon" viewBox="0 0 24 24" width="18" height="18" aria-hidden="true">
+        <circle cx="11" cy="11" r="7" fill="none" stroke="currentColor" stroke-width="1.8" />
+        <line x1="16.5" y1="16.5" x2="21" y2="21" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" />
+      </svg>
+      <input
+        id="palette-input"
+        type="text"
+        placeholder="Search for a command…"
+        autocomplete="off"
+        spellcheck="false"
+        aria-label="Search commands"
+      />
+      <kbd class="kbd">esc</kbd>
+    </div>
+    <ul id="palette-list" class="palette__list" role="listbox" aria-label="Commands"></ul>
+    <div id="palette-empty" class="palette__empty" hidden>
+      <span>No results found</span>
+    </div>
+  </div>
+</div>
+
+<script
+  is:inline
+  define:vars={{
+    email: profile.email,
+    github: profile.socials.github,
+    linkedin: profile.socials.linkedin,
+    resumeUrl: profile.resumeUrl,
+  }}
+>
+  (function () {
+    const palette = document.getElementById("palette");
+    const overlay = palette.querySelector("[data-close]");
+    const input = document.getElementById("palette-input");
+    const list = document.getElementById("palette-list");
+    const empty = document.getElementById("palette-empty");
+    const openBtn = document.getElementById("palette-open");
+
+    function scrollToId(id) {
+      const el = document.querySelector(id);
+      if (el) el.scrollIntoView({ behavior: "smooth", block: "start" });
+    }
+
+    const commands = [
+      { id: "top", label: "Go to top", group: "Navigation", run: () => scrollToId("#top") },
+      { id: "experience", label: "Experience", group: "Navigation", run: () => scrollToId("#experience") },
+      { id: "education", label: "Education", group: "Navigation", run: () => scrollToId("#education") },
+      { id: "projects", label: "Projects", group: "Navigation", run: () => scrollToId("#projects") },
+      { id: "skills", label: "Skills", group: "Navigation", run: () => scrollToId("#skills") },
+      {
+        id: "copy-email",
+        label: "Copy email address",
+        group: "Contact",
+        keywords: email,
+        run: async () => {
+          try {
+            await navigator.clipboard.writeText(email);
+          } catch (e) {
+            window.location.href = "mailto:" + email;
+          }
+        },
+      },
+      { id: "email", label: "Send an email", group: "Contact", keywords: email, run: () => (window.location.href = "mailto:" + email) },
+      { id: "github", label: "GitHub", group: "External", keywords: "code repo", run: () => window.open(github, "_blank", "noopener") },
+      { id: "linkedin", label: "LinkedIn", group: "External", keywords: "profile connect", run: () => window.open(linkedin, "_blank", "noopener") },
+      { id: "resume", label: "View résumé (PDF)", group: "External", keywords: "cv download", run: () => window.open(resumeUrl, "_blank", "noopener") },
+      {
+        id: "theme",
+        label: "Toggle light / dark theme",
+        group: "Appearance",
+        keywords: "color mode",
+        run: () => document.getElementById("theme-toggle")?.click(),
+      },
+    ];
+
+    let filtered = commands.slice();
+    let active = 0;
+    let itemEls = [];
+
+    function render() {
+      list.innerHTML = "";
+      empty.hidden = filtered.length > 0;
+      let lastGroup = null;
+      filtered.forEach((cmd, i) => {
+        if (cmd.group !== lastGroup) {
+          const header = document.createElement("li");
+          header.className = "palette__group";
+          header.setAttribute("role", "presentation");
+          header.textContent = cmd.group;
+          list.appendChild(header);
+          lastGroup = cmd.group;
+        }
+        const li = document.createElement("li");
+        li.className = "palette__item";
+        li.setAttribute("role", "option");
+        li.dataset.index = String(i);
+        li.innerHTML =
+          '<span class="palette__label">' +
+          cmd.label +
+          '</span><span class="palette__enter" aria-hidden="true">↵</span>';
+        li.addEventListener("mousemove", () => {
+          if (active !== i) {
+            active = i;
+            paintActive();
+          }
+        });
+        li.addEventListener("click", () => execute(i));
+        list.appendChild(li);
+      });
+      itemEls = [...list.querySelectorAll(".palette__item")];
+      paintActive();
+    }
+
+    function paintActive() {
+      itemEls.forEach((li) => {
+        const on = Number(li.dataset.index) === active;
+        li.classList.toggle("is-active", on);
+        li.setAttribute("aria-selected", on ? "true" : "false");
+        if (on) li.scrollIntoView({ block: "nearest" });
+      });
+    }
+
+    function filter(q) {
+      const s = q.trim().toLowerCase();
+      filtered = !s
+        ? commands.slice()
+        : commands.filter(
+            (c) =>
+              c.label.toLowerCase().includes(s) ||
+              c.group.toLowerCase().includes(s) ||
+              (c.keywords || "").toLowerCase().includes(s)
+          );
+      active = 0;
+      render();
+    }
+
+    function open() {
+      palette.hidden = false;
+      document.body.style.overflow = "hidden";
+      input.value = "";
+      filter("");
+      requestAnimationFrame(() => {
+        palette.classList.add("is-open");
+        input.focus();
+      });
+    }
+
+    function close() {
+      palette.classList.remove("is-open");
+      document.body.style.overflow = "";
+      setTimeout(() => (palette.hidden = true), 160);
+    }
+
+    function execute(i) {
+      const cmd = filtered[i];
+      if (!cmd) return;
+      close();
+      setTimeout(() => cmd.run(), 60);
+    }
+
+    openBtn?.addEventListener("click", open);
+    overlay.addEventListener("click", close);
+    input.addEventListener("input", (e) => filter(e.target.value));
+
+    document.addEventListener("keydown", (e) => {
+      if ((e.metaKey || e.ctrlKey) && e.key.toLowerCase() === "k") {
+        e.preventDefault();
+        palette.hidden ? open() : close();
+        return;
+      }
+      if (palette.hidden) return;
+      if (e.key === "Escape") {
+        e.preventDefault();
+        close();
+      } else if (e.key === "ArrowDown") {
+        e.preventDefault();
+        active = Math.min(active + 1, filtered.length - 1);
+        paintActive();
+      } else if (e.key === "ArrowUp") {
+        e.preventDefault();
+        active = Math.max(active - 1, 0);
+        paintActive();
+      } else if (e.key === "Enter") {
+        e.preventDefault();
+        execute(active);
+      }
+    });
+  })();
+</script>
+
+<style>
+  .palette[hidden] {
+    display: none;
+  }
+  .palette {
+    position: fixed;
+    inset: 0;
+    z-index: 100;
+    display: flex;
+    align-items: flex-start;
+    justify-content: center;
+    padding: clamp(60px, 14vh, 140px) 16px 16px;
+  }
+  .palette__overlay {
+    position: absolute;
+    inset: 0;
+    background: var(--overlay);
+    backdrop-filter: blur(3px);
+    -webkit-backdrop-filter: blur(3px);
+    opacity: 0;
+    transition: opacity 0.16s ease;
+  }
+  .palette.is-open .palette__overlay {
+    opacity: 1;
+  }
+  .palette__panel {
+    position: relative;
+    display: flex;
+    flex-direction: column;
+    width: min(500px, 100%);
+    max-height: min(66vh, 520px);
+    background: var(--bg-elev);
+    border: 1px solid var(--border-strong);
+    border-radius: 16px;
+    box-shadow: var(--shadow);
+    overflow: hidden;
+    transform: translateY(-10px) scale(0.97);
+    opacity: 0;
+    transition: transform 0.2s cubic-bezier(0.22, 1, 0.36, 1), opacity 0.18s ease;
+  }
+  .palette.is-open .palette__panel {
+    transform: none;
+    opacity: 1;
+  }
+
+  /* Search bar */
+  .palette__search {
+    display: flex;
+    align-items: center;
+    gap: 11px;
+    padding: 16px 18px;
+    border-bottom: 1px solid var(--border);
+    flex: none;
+  }
+  .palette__search-icon {
+    color: var(--fg-subtle);
+    flex: none;
+  }
+  .palette__search input {
+    flex: 1;
+    min-width: 0;
+    border: none;
+    background: none;
+    color: var(--fg);
+    font: inherit;
+    font-size: 15.5px;
+    letter-spacing: -0.01em;
+    outline: none;
+  }
+  .palette__search input::placeholder {
+    color: var(--fg-subtle);
+  }
+
+  .kbd {
+    display: inline-grid;
+    place-items: center;
+    min-width: 22px;
+    height: 22px;
+    padding: 0 6px;
+    border-radius: 6px;
+    background: var(--tag-bg);
+    border: 1px solid var(--border);
+    color: var(--tag-fg);
+    font-family: var(--font-mono);
+    font-size: 11px;
+    line-height: 1;
+    flex: none;
+  }
+
+  /* List */
+  .palette__list {
+    list-style: none;
+    margin: 0;
+    padding: 10px 18px 16px;
+    overflow-y: auto;
+    flex: 1;
+    scrollbar-width: thin;
+    scrollbar-color: var(--border-strong) transparent;
+  }
+  .palette__list::-webkit-scrollbar {
+    width: 8px;
+  }
+  .palette__list::-webkit-scrollbar-thumb {
+    background: var(--border-strong);
+    border-radius: 8px;
+    border: 2px solid var(--bg-elev);
+  }
+
+  /* List items are injected via JS, so these rules must be global
+     (Astro scopes styles only to elements present in the template). */
+  .palette__list :global(.palette__group) {
+    padding: 18px 2px 6px;
+    font-family: var(--font-mono);
+    font-size: 11px;
+    font-weight: 500;
+    text-transform: uppercase;
+    letter-spacing: 0.12em;
+    color: var(--fg-subtle);
+  }
+  .palette__list :global(.palette__group:first-child) {
+    padding-top: 4px;
+  }
+
+  /* Items styled like the hero text links */
+  .palette__list :global(.palette__item) {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    padding: 10px 2px;
+    cursor: pointer;
+    color: var(--fg-muted);
+    scroll-margin: 12px;
+    transition: color 0.18s ease;
+  }
+  .palette__list :global(.palette__label) {
+    position: relative;
+    font-size: 15px;
+    letter-spacing: -0.01em;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+  }
+  .palette__list :global(.palette__label)::after {
+    content: "";
+    position: absolute;
+    left: 0;
+    right: 0;
+    bottom: -3px;
+    height: 1px;
+    background: var(--accent);
+    transform: scaleX(0);
+    transform-origin: left;
+    transition: transform 0.24s cubic-bezier(0.22, 1, 0.36, 1);
+  }
+  .palette__list :global(.palette__item.is-active) {
+    color: var(--fg);
+  }
+  .palette__list :global(.palette__item.is-active .palette__label)::after {
+    transform: scaleX(1);
+  }
+  .palette__list :global(.palette__enter) {
+    margin-left: auto;
+    font-family: var(--font-mono);
+    font-size: 13px;
+    color: var(--accent);
+    opacity: 0;
+    transform: translateX(-4px);
+    transition: opacity 0.18s ease, transform 0.18s ease;
+    flex: none;
+  }
+  .palette__list :global(.palette__item.is-active .palette__enter) {
+    opacity: 1;
+    transform: none;
+  }
+
+  .palette__empty {
+    padding: 32px 16px 36px;
+    text-align: center;
+    color: var(--fg-subtle);
+    font-size: 14px;
+  }
+
+  @media (max-width: 460px) {
+    .palette {
+      padding: 72px 12px 12px;
+    }
+  }
+</style>

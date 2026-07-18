@@ -1,0 +1,181 @@
+---
+import { profile } from "../data/resume";
+const initials = profile.name
+  .split(" ")
+  .map((w) => w[0])
+  .join("")
+  .slice(0, 2);
+---
+
+<header class="topbar">
+  <div class="wrap topbar__inner">
+    <a href="#top" class="brand" aria-label={`${profile.name} — back to top`}>
+      <span class="brand__mark">{initials}</span>
+      <span class="brand__name">{profile.name}</span>
+    </a>
+
+    <div class="topbar__actions">
+      <button
+        id="palette-open"
+        class="palette-trigger"
+        type="button"
+        aria-label="Open command palette"
+      >
+        <span class="palette-trigger__hint">press</span>
+        <kbd class="kbd">⌘</kbd><kbd class="kbd">K</kbd>
+      </button>
+
+      <button
+        id="theme-toggle"
+        class="icon-btn"
+        type="button"
+        aria-label="Toggle color theme"
+      >
+        <svg class="icon icon--sun" viewBox="0 0 24 24" width="18" height="18" aria-hidden="true">
+          <circle cx="12" cy="12" r="4" fill="none" stroke="currentColor" stroke-width="1.8" />
+          <g stroke="currentColor" stroke-width="1.8" stroke-linecap="round">
+            <line x1="12" y1="2" x2="12" y2="4.5" />
+            <line x1="12" y1="19.5" x2="12" y2="22" />
+            <line x1="2" y1="12" x2="4.5" y2="12" />
+            <line x1="19.5" y1="12" x2="22" y2="12" />
+            <line x1="4.9" y1="4.9" x2="6.7" y2="6.7" />
+            <line x1="17.3" y1="17.3" x2="19.1" y2="19.1" />
+            <line x1="4.9" y1="19.1" x2="6.7" y2="17.3" />
+            <line x1="17.3" y1="6.7" x2="19.1" y2="4.9" />
+          </g>
+        </svg>
+        <svg class="icon icon--moon" viewBox="0 0 24 24" width="18" height="18" aria-hidden="true">
+          <path
+            d="M21 12.8A9 9 0 1 1 11.2 3a7 7 0 0 0 9.8 9.8Z"
+            fill="none"
+            stroke="currentColor"
+            stroke-width="1.8"
+            stroke-linejoin="round"
+          />
+        </svg>
+      </button>
+    </div>
+  </div>
+</header>
+
+<style>
+  .topbar {
+    position: sticky;
+    top: 0;
+    z-index: 40;
+    background: color-mix(in srgb, var(--bg) 82%, transparent);
+    backdrop-filter: saturate(180%) blur(12px);
+    -webkit-backdrop-filter: saturate(180%) blur(12px);
+    border-bottom: 1px solid transparent;
+    transition: border-color 0.3s ease, background-color 0.3s ease;
+  }
+  .topbar.is-scrolled {
+    border-bottom-color: var(--border);
+  }
+  .topbar__inner {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    height: 58px;
+    gap: 12px;
+  }
+  .brand {
+    display: inline-flex;
+    align-items: center;
+    gap: 10px;
+    min-width: 0;
+  }
+  .brand__mark {
+    display: grid;
+    place-items: center;
+    width: 28px;
+    height: 28px;
+    border-radius: 8px;
+    background: var(--accent);
+    color: #fff;
+    font-size: 12px;
+    font-weight: 700;
+    letter-spacing: 0.02em;
+    flex: none;
+  }
+  .brand__name {
+    font-size: 14px;
+    font-weight: 600;
+    letter-spacing: -0.01em;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+  }
+  .topbar__actions {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    flex: none;
+  }
+  .palette-trigger {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    height: 34px;
+    padding: 0 10px;
+    border: 1px solid var(--border-strong);
+    border-radius: 9px;
+    background: var(--bg-elev);
+    color: var(--fg-muted);
+    font: inherit;
+    font-size: 13px;
+    cursor: pointer;
+    transition: border-color 0.2s ease, color 0.2s ease, background-color 0.2s ease;
+  }
+  .palette-trigger:hover {
+    border-color: var(--accent);
+    color: var(--fg);
+  }
+  .palette-trigger__hint {
+    font-size: 12.5px;
+  }
+  .kbd {
+    display: inline-grid;
+    place-items: center;
+    min-width: 18px;
+    height: 18px;
+    padding: 0 4px;
+    border-radius: 5px;
+    background: var(--tag-bg);
+    color: var(--tag-fg);
+    font-family: var(--font-mono);
+    font-size: 11px;
+    line-height: 1;
+  }
+  .icon-btn {
+    display: grid;
+    place-items: center;
+    width: 34px;
+    height: 34px;
+    border: 1px solid var(--border-strong);
+    border-radius: 9px;
+    background: var(--bg-elev);
+    color: var(--fg-muted);
+    cursor: pointer;
+    transition: border-color 0.2s ease, color 0.2s ease;
+  }
+  .icon-btn:hover {
+    border-color: var(--accent);
+    color: var(--fg);
+  }
+  .icon--moon {
+    display: none;
+  }
+  :global(:root[data-theme="dark"]) .icon--sun {
+    display: none;
+  }
+  :global(:root[data-theme="dark"]) .icon--moon {
+    display: block;
+  }
+
+  @media (max-width: 460px) {
+    .palette-trigger__hint {
+      display: none;
+    }
+  }
+</style>
