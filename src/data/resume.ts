@@ -19,8 +19,9 @@ export type Experience = {
   start: string;
   end: string;
   bullets: string[];
-  url?: string;
-  urlType?: "github" | "site";
+  companyUrl?: string;
+  logo?: string;
+  logoColor?: string;
 };
 
 export const experience: Experience[] = [
@@ -30,19 +31,22 @@ export const experience: Experience[] = [
     location: "Ottawa, ON",
     start: "May 2026",
     end: "Present",
+    companyUrl: "https://solink.com",
+    logo: "/logos/solink.png",
     bullets: [
-      "Built an end-to-end remote DNS configuration feature across a cloud management platform, embedded NAS devices, and Linux-based recording devices — enabling operators to manage upstream DNS servers across customer deployments without on-site access.",
-      "Engineered GitHub Actions CI/CD pipelines to automate build testing, package deployment to a Nexus artifact repository, and application bundling, reducing manual steps in the release process.",
+      "Deployed KEDA queue-depth autoscaling and tiered CloudWatch alerting to resolve a silent production bug, eliminating 8-hour message delays across an 1,800-message backlog.",
+      "Owned end-to-end delivery of a fleet-wide DNS management system across 6 services in Rust and TypeScript, reversing a critical architectural flaw that would have silently failed in production.",
+      "Engineered GitHub Actions CI/CD pipelines automating build testing and Nexus artifact deployment, eliminating manual steps from the release process.",
     ],
   },
   {
     company: "RUMII",
-    role: "Founder & Lead Developer",
+    role: "Founder",
     location: "Toronto, ON",
     start: "Jun 2025",
     end: "Present",
-    url: "https://rumiapp.ca",
-    urlType: "site",
+    companyUrl: "https://rumiapp.ca",
+    logo: "/logos/rumiapp.png",
     bullets: [
       "Developed and launched a React Native iOS application as the sole developer, growing to 1,000+ users and winning the $1,000 “Best Real World Impact” award at the Canadian Tech Summit.",
       "Reduced profile load times from 1.4s to 100ms using indexed JPQL queries, AWS S3 presigned URLs, and automated WebP image compression.",
@@ -55,10 +59,11 @@ export const experience: Experience[] = [
     location: "Remote",
     start: "May 2024",
     end: "Aug 2024",
+    companyUrl: "https://teesas.com",
+    logo: "/logos/teesas.jpg",
     bullets: [
-      "Reduced API response latency by 45% for 10,000+ active users through Redis caching, endpoint refactoring, and PostgreSQL query optimization with proper indexing strategies.",
+      "Reduced API response latency by 45% for 100,000+ active students through Redis caching, endpoint refactoring, and PostgreSQL query optimization with proper indexing.",
       "Accelerated developer onboarding by 20% by authoring comprehensive Swagger/OpenAPI documentation and interactive Postman collections for 30+ RESTful endpoints.",
-      "Architected and implemented 8 new backend features in NestJS following SOLID principles, dependency injection, and test-driven development.",
     ],
   },
 ];
@@ -71,17 +76,21 @@ export type Education = {
   start: string;
   end: string;
   awards: string[];
+  logo?: string;
+  logoColor?: string;
 };
 
 export const education: Education[] = [
   {
     school: "Western University",
     degree: "Honours B.Sc. Computer Science, Minor in Software Engineering",
-    detail: "3.7 / 4.0 GPA",
+    detail: "3.70 / 4.00 GPA",
     location: "London, ON",
     start: "Sep 2023",
     end: "May 2028",
-    awards: ["Dean’s Honour List (2x)"],
+    awards: ["Dean’s Honour List"],
+    logo: "/logos/western.png",
+    logoColor: "#4F2683",
   },
 ];
 
@@ -102,6 +111,12 @@ export const projects: Project[] = [
     github: "https://github.com/rumen-spec/PalendrAI",
   },
   {
+    name: "FitPro",
+    description:
+      "Personalized fitness SaaS with AI-powered coaching, Stripe subscription billing, and real-time Firestore sync — co-developed and acquired for $7,000. Built the Stripe webhook lifecycle and onboarding flow.",
+    tech: ["Next.js", "Firebase", "Stripe"],
+  },
+  {
     name: "Real-Time Multiplayer Chess",
     description:
       "Full-stack chess platform with WebSocket-based real-time sync enabling sub-100ms move propagation, plus an AI opponent using minimax with alpha-beta pruning.",
@@ -109,10 +124,12 @@ export const projects: Project[] = [
     github: "https://github.com/rumen-spec/chess",
   },
   {
-    name: "FitPro",
+    name: "Graph Algorithm Visualizer",
     description:
-      "Personalized fitness SaaS with AI-powered coaching, Stripe subscription billing, and real-time Firestore sync — co-developed and acquired for $7,000. Built the Stripe webhook lifecycle and onboarding flow.",
-    tech: ["Next.js", "Firebase", "Stripe", "OpenAI"],
+      "Interactive visualizer for graph traversal and pathfinding — Dijkstra, A*, DFS, and BFS — with adjustable animation speed and an editable graph for adding or removing nodes and edges in real time.",
+    tech: ["React", "TypeScript", "Vite", "Tailwind CSS"],
+    github: "https://github.com/rumen-spec/graph-algo-visualizer",
+    live: "https://rumen-spec.github.io/graph-algo-visualizer/",
   },
 ];
 
@@ -125,7 +142,6 @@ export const skills: { label: string; items: string[] }[] = [
     label: "Frameworks & Libraries",
     items: [
       "Node.js",
-      "Express",
       "React",
       "React Native",
       "Spring Boot",
@@ -133,8 +149,7 @@ export const skills: { label: string; items: string[] }[] = [
       "FastAPI",
       "Flask",
       "Expo",
-      "JPA",
-      "Hibernate",
+      "Kubernetes",
     ],
   },
   {
@@ -143,13 +158,9 @@ export const skills: { label: string; items: string[] }[] = [
       "AWS",
       "Docker",
       "PostgreSQL",
-      "MySQL",
       "MongoDB",
-      "Redis",
-      "Git",
       "GitHub Actions",
       "Postman",
-      "Swagger",
       "Firebase",
     ],
   },
