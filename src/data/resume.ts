@@ -34,8 +34,8 @@ export const experience: Experience[] = [
     companyUrl: "https://solink.com",
     logo: "/logos/solink.png",
     bullets: [
-      "Deployed KEDA queue-depth autoscaling and tiered CloudWatch alerting to resolve a silent production bug, eliminating 8-hour message delays across an 1,800-message backlog.",
-      "Owned end-to-end delivery of a fleet-wide DNS management system across 6 services in Rust and TypeScript, reversing a critical architectural flaw that would have silently failed in production.",
+      "Architected the configuration and safety logic for a cloud-managed DNS platform across 6 services, designing a fail-safe precedence model that guarantees a device’s network settings are never corrupted by an incomplete or ambiguous config.",
+      "Built the device-side integration layer connecting two platforms (QNAP NAS appliances and Ubuntu hosts) to the platform, with automatic retry and rollback so a failed update can never leave a device without working DNS.",
       "Engineered GitHub Actions CI/CD pipelines automating build testing and Nexus artifact deployment, eliminating manual steps from the release process.",
     ],
   },
@@ -49,8 +49,8 @@ export const experience: Experience[] = [
     logo: "/logos/rumiapp.png",
     bullets: [
       "Developed and launched a React Native iOS application as the sole developer, growing to 1,000+ users and winning the $1,000 “Best Real World Impact” award at the Canadian Tech Summit.",
-      "Reduced profile load times from 1.4s to 100ms using indexed JPQL queries, AWS S3 presigned URLs, and automated WebP image compression.",
-      "Deployed containerized services with Docker, implementing real-time WebSocket messaging (STOMP, Redis pub/sub) with push-notification fallback, AES-GCM encryption, and async non-blocking processing.",
+      "Optimized backend latency and performance, reducing profile load times from 1.4s to 100ms by implementing indexed JPQL queries, AWS S3 presigned URLs, and automated WebP image compression.",
+      "Deployed containerized services with Docker, implementing real-time WebSocket messaging (STOMP, Redis pub/sub) with push-notification fallback, AES-GCM encryption, and async processing for non-blocking operations.",
     ],
   },
   {
@@ -103,6 +103,13 @@ export type Project = {
 };
 
 export const projects: Project[] = [
+  {
+    name: "Distributed Task Queue",
+    description:
+      "Distributed task queue in Rust with Raft consensus for leader election, a write-ahead log for durability, and at-least-once delivery across a multi-node broker cluster. Adds visibility timeouts, exponential-backoff retry, and automatic dead-letter routing, exposing Prometheus metrics on queue depth and consumer lag via a gRPC API.",
+    tech: ["Rust", "gRPC", "Raft", "Tokio", "Prometheus"],
+    github: "https://github.com/rumen-spec/Ferroqueue",
+  },
   {
     name: "PalendrAI",
     description:
